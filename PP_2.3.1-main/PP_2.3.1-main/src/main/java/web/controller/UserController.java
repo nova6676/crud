@@ -1,6 +1,4 @@
 package web.controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +12,8 @@ import javax.validation.Valid;
 @RequestMapping("/")
 public class UserController {
 
-    @Autowired
-    private final UserService userService;
 
+    private final UserService userService;
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -28,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable("id") long id, Model model) {
+    public String getUserById(@RequestParam("id") long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
         return "user";
     }
@@ -48,14 +45,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
+    public String edit(Model model, @RequestParam("id") long id) {
         model.addAttribute("user", userService.getUserById(id));
         return "edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") @Valid User user,
-                         BindingResult bindingResult, @PathVariable("id") long id) {
+                         BindingResult bindingResult, @RequestParam("id") long id) {
         if (bindingResult.hasErrors()){
             return "edit";
         }
@@ -64,7 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long id) {
+    public String delete(@RequestParam("id") long id) {
         userService.removeUserById(id);
         return "redirect:/";
     }
